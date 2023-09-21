@@ -1,4 +1,5 @@
 import argparse
+import pathlib
 
 def parse_args():
     """
@@ -32,7 +33,7 @@ def parse_args():
                         default=2.5e-4, type=float)
     parser.add_argument('--numEpochs', dest='numEpochs',
                         help='the number of epochs',
-                        default=1000, type=int)
+                        default=500, type=int)
     parser.add_argument('--startEpoch', dest='startEpoch',
                         help='starting epoch index',
                         default=0, type=int)
@@ -84,6 +85,17 @@ def parse_args():
                         help='augment image data or not',
                         default=False, type=bool)    
     
+    parser.add_argument('--prediction_dir', dest='prediction_dir',
+                        help='Directory containing images for prediction',
+                        default=pathlib.Path('input_for_prediction'), type=pathlib.Path)
+
+    parser.add_argument('--dataFolder', dest='dataFolder',
+                        help='Directory containing values for data(train/test/val or custom.txt)',
+                        default=pathlib.Path('../data/'), type=pathlib.Path)
+    
+    parser.add_argument('--testdir', dest='test_dir',
+                        help='Directory where test results are saved',
+                        default='custom', type=str)    
 
     args = parser.parse_args()
     return args

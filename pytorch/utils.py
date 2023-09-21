@@ -4,6 +4,7 @@ from skimage.draw import polygon
 
 import torchvision.transforms.functional as F
 from PIL import Image
+np.bool = np.bool_
 
 # added 45 wall corner patterns and 4 opening corner patterns
 NUM_WALL_CORNERS = 58#13

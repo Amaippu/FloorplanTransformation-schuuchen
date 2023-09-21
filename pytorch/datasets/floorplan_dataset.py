@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset
-
+import pathlib
 import numpy as np
 import time
 
@@ -304,7 +304,8 @@ class FloorplanDataset(Dataset):
         self.random = random
         self.augment = augment
         self.imagePaths = []
-        self.dataFolder = '../data/'
+        # self.dataFolder = '../data/'
+        self.dataFolder = f"{options.__dict__.get('dataFolder', pathlib.Path('../data'))}/"#'../data/'
         self.test_batch = test_batch
 
         bad_anno = ['./anno_label/dqf788hn0qar6zm_stitch.txt',
