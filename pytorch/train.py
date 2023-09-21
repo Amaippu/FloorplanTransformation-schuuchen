@@ -127,8 +127,6 @@ def main(options):
       return
 
 def predictForInputImages(options, model):
-    model.eval()
-
     directory_prediction: pathlib.Path = options.prediction_dir
     prediction_file: pathlib.Path = directory_prediction.joinpath('predict.txt')
     if (not directory_prediction.exists()):
@@ -160,6 +158,8 @@ def predictForInputImages(options, model):
     
     epoch_losses = []    
     data_iterator = tqdm(dataloader, total=len(dataset) // options.batchSize + 1)
+
+    model.eval()
     for sampleIndex, sample in enumerate(data_iterator):
 
         images, corner_gt, icon_gt, room_gt = sample[0].cuda(), sample[1].cuda(), sample[2].cuda(), sample[3].cuda()
@@ -334,7 +334,7 @@ def testBatch(options, model, dataset):
     model.train()
     return
 
-def visualizeBatch(options, images, dicts, indexOffset=0, prefix='', batch_img_name=None):
+def visualizeBatch(options, images, dicts, indexOffset=0, prefix='', batch_img_name=None, blackThreshold=0.5):
     #cornerColorMap = {'gt': np.array([255, 0, 0]), 'pred': np.array([0, 0, 255]), 'inp': np.array([0, 255, 0])}
     #pointColorMap = ColorPalette(20).getColorMap()
     images = ((images.transpose((0, 2, 3, 1)) + 0.5) * 255).astype(np.uint8)
@@ -343,15 +343,11 @@ def visualizeBatch(options, images, dicts, indexOffset=0, prefix='', batch_img_n
         if batch_img_name:
           filename = options.test_dir + '/%s_image.png' % batch_img_name
         else:
-          filename = options.test_dir + '/' + str(indexOffset + batchIndex) + '_image.png'
+          filename = options.test_dir + '/' + prefix+str(indexOffset + batchIndex) + '_image.png'
         cv2.imwrite(filename, image)
         for name, result_dict in dicts:
             for info in ['corner', 'icon', 'room']:
-                cv2.imwrite(filename.replace('image', info + '_' + name), drawSegmentationImage(result_dict[info][batchIndex], blackIndex=0, blackThreshold=0.5))
-                continue
-            continue
-        continue
-    return
+                cv2.imwrite(filename.replace('image', f'{info}_{name}'), drawSegmentationImage(result_dict[info][batchIndex], blackIndex=0, blackThreshold=blackThreshold))
 
 if __name__ == '__main__':
     args = parse_args()

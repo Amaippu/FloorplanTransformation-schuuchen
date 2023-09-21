@@ -1483,7 +1483,20 @@ def sortLines(points, lines, door=False):
         lines[lineIndex] = (line[1], line[0])
 
 ## Reconstruct a floorplan via IP optimization
-def reconstructFloorplan(wallCornerHeatmaps, doorCornerHeatmaps, iconCornerHeatmaps, iconHeatmaps, roomHeatmaps, output_prefix='test/', densityImage=None, gt_dict=None, gt=False, gap=-1, distanceThreshold=-1, lengthThreshold=-1, debug_prefix='test', heatmapValueThresholdWall=None, heatmapValueThresholdDoor=None, heatmapValueThresholdIcon=None, enableAugmentation=False):
+def reconstructFloorplan(
+    wallCornerHeatmaps, doorCornerHeatmaps, iconCornerHeatmaps, iconHeatmaps, roomHeatmaps, 
+    output_prefix='test/', 
+    densityImage=None, 
+    gt_dict=None, 
+    gt=False, 
+    gap=-1, 
+    distanceThreshold=-1, 
+    lengthThreshold=-1, 
+    debug_prefix='test', 
+    heatmapValueThresholdWall=None, 
+    heatmapValueThresholdDoor=None, 
+    heatmapValueThresholdIcon=None, 
+    enableAugmentation=False):
   print('reconstruct')
 
   wallPoints = []
@@ -1495,9 +1508,13 @@ def reconstructFloorplan(wallCornerHeatmaps, doorCornerHeatmaps, iconCornerHeatm
   numIconPoints = 100
   if heatmapValueThresholdWall is None:
     heatmapValueThresholdWall = 0.5
-    pass
-  heatmapValueThresholdDoor = 0.5
-  heatmapValueThresholdIcon = 0.5
+  
+  if heatmapValueThresholdDoor is None:
+    heatmapValueThresholdDoor = 0.5
+  
+  if heatmapValueThresholdIcon is None:
+    heatmapValueThresholdIcon = 0.5
+    
   gap = 3
   if gap > 0:
     for k in GAPS:

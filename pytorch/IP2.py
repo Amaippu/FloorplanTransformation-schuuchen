@@ -1179,7 +1179,20 @@ def sortLines(points, lines):
     continue
 
 ## Reconstruct a floorplan via IP optimization
-def reconstructFloorplan(wallCornerHeatmaps, doorCornerHeatmaps, iconCornerHeatmaps, iconHeatmaps, roomHeatmaps, output_prefix='test/', densityImage=None, gt_dict=None, gt=False, gap=-1, distanceThreshold=-1, lengthThreshold=-1, debug_prefix='test', heatmapValueThresholdWall=None, heatmapValueThresholdDoor=None, heatmapValueThresholdIcon=None, enableAugmentation=False):
+def reconstructFloorplan(
+    wallCornerHeatmaps, doorCornerHeatmaps, iconCornerHeatmaps, iconHeatmaps, roomHeatmaps, 
+    output_prefix='test/', 
+    densityImage=None, 
+    gt_dict=None, 
+    gt=False, 
+    gap=-1, 
+    distanceThreshold=-1, 
+    lengthThreshold=-1, 
+    debug_prefix='test', 
+    heatmapValueThresholdWall=None, 
+    heatmapValueThresholdDoor=None, 
+    heatmapValueThresholdIcon=None, 
+    enableAugmentation=False):
   print('reconstruct')
 
   wallPoints = []

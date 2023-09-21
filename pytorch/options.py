@@ -48,7 +48,10 @@ def parse_args():
                         default=0.2, type=float)
     parser.add_argument('--distanceThreshold2D', dest='distanceThreshold2D',
                         help='distance threshold 2D',
-                        default=20, type=float)
+                        default=-1, type=float)
+    parser.add_argument('--lengthThreshold2D', dest='lengthThreshold2D',
+                        help='Length threshold 2D',
+                        default=-1, type=float)
     parser.add_argument('--numInputPlanes', dest='numInputPlanes',
                         help='the number of input planes',
                         default=1024, type=int)
@@ -94,8 +97,8 @@ def parse_args():
                         default=pathlib.Path('../data/'), type=pathlib.Path)
     
     parser.add_argument('--testdir', dest='test_dir',
-                        help='Directory where test results are saved',
-                        default='custom', type=str)    
+                        help='Directory where test/prediction results are saved',
+                        default='test/', type=str)    
 
     args = parser.parse_args()
     return args
