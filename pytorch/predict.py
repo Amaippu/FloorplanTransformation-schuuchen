@@ -63,9 +63,11 @@ def predictForInputImages(options, model):
         wallInformationFile: pathlib.Path = pathlib.Path(options.test_dir).joinpath(f'{sampleIndex}_0_floorplan.txt')
         wallInformationDrawing: pathlib.Path = pathlib.Path(options.test_dir).joinpath(f'{sampleIndex}_0_image_floorplan_drawing.jpg')
         floorplanOriginalImage: pathlib.Path = pathlib.Path(options.test_dir).joinpath(f'{sampleIndex}_0_image.png')
-        wallInformationCombinedDrawing: pathlib.Path = pathlib.Path(options.test_dir).joinpath(f'{sampleIndex}_0_image_wall_result_combined.jpg')
+        roomPredictionImage: pathlib.Path = pathlib.Path(options.test_dir).joinpath(f'{sampleIndex}_0_room_pred.png')
+        wallInformationCombinedDrawing: pathlib.Path = pathlib.Path(options.test_dir).joinpath('results').joinpath(f'{sampleIndex}_0_image_wall_result_combined.jpg')
 
-
+        wallInformationCombinedDrawing.parent.mkdir(exist_ok=True, parents=True)
+        
         images, corner_gt, icon_gt, room_gt = sample[0].cuda(
         ), sample[1].cuda(), sample[2].cuda(), sample[3].cuda()
 
@@ -128,6 +130,7 @@ def predictForInputImages(options, model):
             total_walls = [int(val.strip()) for val in lines[1].split('\t')][0]
 
             floorplan_image = cv2.imread(f'{floorplanOriginalImage}')
+            room_prediction_image = cv2.imread(f'{roomPredictionImage}')
             drawing_image = np.zeros((h, w, 3), np.uint8)
             drawing_image[:,:,:,] = 255
 
@@ -139,7 +142,7 @@ def predictForInputImages(options, model):
                 cv2.line(drawing_image, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
             f.close()
-            cv2.imwrite(f'{wallInformationCombinedDrawing}', np.concatenate((floorplan_image, drawing_image), axis=1))
+            cv2.imwrite(f'{wallInformationCombinedDrawing}', np.concatenate((floorplan_image, drawing_image, room_prediction_image), axis=1))
             cv2.imwrite(f'{wallInformationDrawing}', drawing_image)
 
 
