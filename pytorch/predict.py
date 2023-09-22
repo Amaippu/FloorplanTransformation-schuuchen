@@ -68,8 +68,10 @@ def predictForInputImages(options, model):
 
         wallInformationCombinedDrawing.parent.mkdir(exist_ok=True, parents=True)
         
-        images, corner_gt, icon_gt, room_gt = sample[0].cuda(
-        ), sample[1].cuda(), sample[2].cuda(), sample[3].cuda()
+        if(torch.cuda.is_available()):
+            images, corner_gt, icon_gt, room_gt = sample[0].cuda(), sample[1].cuda(), sample[2].cuda(), sample[3].cuda()
+        else:
+            images, corner_gt, icon_gt, room_gt = sample[0], sample[1], sample[2], sample[3]
 
         corner_pred, icon_pred, room_pred = model(images)
         if(not wallInformationFile.exists()):
@@ -152,13 +154,18 @@ def main(options):
     test_dir.mkdir(exist_ok=True, parents=True)
 
     model = Model(options)
-    model.cuda()
+    if(torch.cuda.is_available()):
+        model.cuda()
+    
     model.train()
 
-    checkpoint = torch.load(options.checkpoint_dir +
-                            '/checkpoint_%s.pth' % (base))
-    model.load_state_dict(checkpoint)
+    if(torch.cuda.is_available()):        
+        checkpoint = torch.load(options.checkpoint_dir + '/checkpoint_%s.pth' % (base))        
+    else:
+        checkpoint = torch.load(options.checkpoint_dir + '/checkpoint_%s.pth' % (base), map_location=torch.device('cpu'))
 
+    model.load_state_dict(checkpoint)
+    
     predictForInputImages(options, model)
     exit(1)
 
